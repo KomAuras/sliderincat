@@ -16,75 +16,33 @@
 
 
 <div class="field">
- <div class="name">
-  Изображения
- </div>
+ 	<div class="name">
+  		Изображения слайдера
+ 	</div>
 
- <div class="value">
-   <table class="zebra" style="width: 700px;" id="sliderincat-image-list" data-cat_id="{$cat_id}" >
-    <tr data-image_type="banner" {if $images_flag.banner}data-id="{$images.banner.id}" data-ext="{$images.banner.ext}"{/if}>
-	 <td>
-	  Баннер <span class="hint">({$sizes.banner})</span>
-	 </td>
-
-	 <td>
-	  {if !$images_flag.banner}
-	   <input type='file' name='sliderincat_banner_file' value="Загрузить изображение">
-	  {else}
-	   <a href="javascript: void(0);" class="preview_image">{$images.banner.file_name}</a>
-	  {/if}
-	 </td>
-
-	 <td>
-	  {if $images_flag.banner}
-	   <a href="javascript: void(0);" class="sliderincat-del_image"><i class="icon16 delete"></i>Удалить</a>
-	  {/if}
-	 </td>
-	</tr>
-
-	<tr data-image_type="image" {if $images_flag.image}data-id="{$images.image.id}" data-ext="{$images.image.ext}"{/if}>
-	 <td>
-	  Изображение <span class="hint">({$sizes.image})</span>
-	 </td>
-
-	 <td>
-	  {if !$images_flag.image}
-	   <input type='file' name='sliderincat_image_file' value="Загрузить изображение">
-	  {else}
-	   <a href="javascript: void(0);" class="preview_image">{$images.image.file_name}</a>
-	  {/if}
-	 </td>
-
-	 <td>
-	  {if $images_flag.image}
-	   <a href="javascript: void(0);" class="sliderincat-del_image"><i class="icon16 delete"></i>Удалить</a>
-	  {/if}
-	 </td>
-	</tr>
-
-	<tr data-image_type="icon" {if $images_flag.icon}data-id="{$images.icon.id}" data-ext="{$images.icon.ext}"{/if}>
-	 <td>
-	  Иконка <span class="hint">({$sizes.icon})</span>
-	 </td>
-
-	 <td>
-	  {if !$images_flag.icon}
-	   <input type='file' name='sliderincat_icon_file' value="Загрузить изображение">
-	  {else}
-	   <a href="javascript: void(0);" class="preview_image">{$images.icon.file_name}</a>
-	  {/if}
-	 </td>
-
-	 <td>
-	  {if $images_flag.icon}
-	   <a href="javascript: void(0);" class="sliderincat-del_image"><i class="icon16 delete"></i>Удалить</a>
-	  {/if}
-	 </td>
-	</tr>
-   </table>
-   <p style="color: green;"><em>После внесения изменений не забудьте нажать на кнопку "Сохранить"</em></p>
-   <p class="sliderincat_error_log" style="color: red;"></p>
- </div>
+ 	<div class="value">
+   		<table class="zebra" style="width: 700px;" id="sliderincat-image-list" data-cat_id="{$cat_id}" >
+			<tr data-image_type="image" {if $images_flag.image}data-id="{$images.image.id}" data-ext="{$images.image.ext}"{/if}>
+	 			<td>Изображение <span class="hint">({$sizes.image})</span></td>
+	 			<td>
+                    {if !$images_flag.image}
+                    <input type='file' name='sliderincat_image_file' value="Загрузить изображение">
+                    {else}
+                    <a href="javascript: void(0);" class="preview_image">{$images.image.file_name}</a>
+                    {/if}
+                </td>
+                <td>
+                    {if $images_flag.image}
+                    <a href="javascript: void(0);" class="sliderincat-del_image"><i class="icon16 delete"></i>Удалить</a>
+                    {/if}
+                </td>
+            </tr>
+        </table>
+        <!--
+        <p style="color: green;"><em>После внесения изменений не забудьте нажать на кнопку "Сохранить"</em></p>
+        //-->
+        <p class="sliderincat_error_log" style="color: red;"></p>
+    </div>
 </div>
 
 
