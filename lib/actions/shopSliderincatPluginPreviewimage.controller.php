@@ -27,12 +27,10 @@ class shopSliderincatPluginPreviewimageController extends waJsonController
     {
         $id = waRequest::post('id', waRequest::TYPE_INT);
         $ext = waRequest::post('ext', waRequest::TYPE_STRING);
-        $type = waRequest::post('type', waRequest::TYPE_STRING);
         $cat_id = waRequest::post('cat_id', waRequest::TYPE_INT);
 
-
         $path = wa()->getDataUrl("sliderincatPlugin/categories/{$cat_id}/", true, 'shop');
-        $path = $path.$type.'_'.$id.'.'.$ext;
+        $path = $path.'image_'.$id.'.'.$ext;
         $this->response['path'] = $path;
     }
 }

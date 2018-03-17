@@ -1,14 +1,15 @@
 <?php
+
 /**
-* Класс формирует эскизы изображений
-*/
+ * Класс формирует эскизы изображений
+ */
 class shopCreatethumbnails
 {
     /**
      * Метод для формирования эскизов
      *
      * @param string $src_image_path - путь к оригиналу изображения
-     * @param string|array $size- строка вида "width X height" || массив вида array('width' => int, 'height' => int);
+     * @param string|array $size - строка вида "width X height" || массив вида array('width' => int, 'height' => int);
      * @param int|bool $max_size
      * @return null|waImage
      * @throws waException
@@ -42,8 +43,8 @@ class shopCreatethumbnails
                     $w = $image->height * $width / $height;
                 }
 
-                if ($width != 0 && $height !=0 ) {
-                    $image->crop($w, $h,'CENTER', 'CENTER')->resize($width, $height, waImage::INVERSE);
+                if ($width != 0 && $height != 0) {
+                    $image->crop($w, $h, 'CENTER', 'CENTER')->resize($width, $height, waImage::INVERSE);
                 } else {
                     $image->resize($width, $height, waImage::INVERSE);
                 }
@@ -56,13 +57,13 @@ class shopCreatethumbnails
         }
         return $image;
     }
- 
+
     /**
      * Метод создаёт структуру данных для генерации эскизов изображений
      *
      * @param string | array $size - строка вида "width X height" || массив вида array('width' => int, 'height' => int);
      * @return array('type' => string, 'width' => string, 'height' => string);
-    */
+     */
     public static function parseSize($size)
     {
         $type = 'unknown';
@@ -75,7 +76,7 @@ class shopCreatethumbnails
             $width = $sizes[0];
             $height = $sizes[1];
         }
-  
+
         if ($width == $height) {
             $type = 'crop';
         } else {

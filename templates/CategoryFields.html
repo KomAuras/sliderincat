@@ -14,7 +14,6 @@
  }
 </style>
 
-
 <div class="field">
  	<div class="name">
   		Изображения слайдера
@@ -22,25 +21,34 @@
 
  	<div class="value">
    		<table class="zebra" style="width: 700px;" id="sliderincat-image-list" data-cat_id="{$cat_id}" >
-			<tr data-image_type="image" {if $images_flag.image}data-id="{$images.image.id}" data-ext="{$images.image.ext}"{/if}>
-	 			<td>Изображение <span class="hint">({$sizes.image})</span></td>
-	 			<td>
-                    {if !$images_flag.image}
-                    <input type='file' name='sliderincat_image_file' value="Загрузить изображение">
-                    {else}
-                    <a href="javascript: void(0);" class="preview_image">{$images.image.file_name}</a>
-                    {/if}
-                </td>
-                <td>
-                    {if $images_flag.image}
-                    <a href="javascript: void(0);" class="sliderincat-del_image"><i class="icon16 delete"></i>Удалить</a>
-                    {/if}
-                </td>
-            </tr>
+            <tbody>
+                {foreach $images as $image}
+                <tr {if $image.id}data-id="{$image.id}" data-ext="{$image.ext}"{/if}>
+                    <td>Изображение <span class="hint">({$sizes})</span></td>
+                    <td>
+                        {if !$image.id}
+                        <input type='file' name='sliderincat_image_file[]' value="Загрузить изображение">
+                        {else}
+                        <a href="javascript: void(0);" class="preview_image_sl">{$image.file_name}</a>
+                        {/if}
+                    </td>
+                    <td>
+                        {if $image.id}
+                        <a href="javascript: void(0);" class="sliderincat-del_image"><i class="icon16 delete"></i>Удалить</a>
+                        {/if}
+                    </td>
+                </tr>
+                {/foreach}
+                <tr>
+                    <td>Изображение <span class='hint'>({$sizes})</span></td>
+                    <td colspan="2"><input type='file' name='sliderincat_image_file[]' value='Загрузить изображение'></td>
+                </tr>
+            </tbody>
         </table>
         <!--
         <p style="color: green;"><em>После внесения изменений не забудьте нажать на кнопку "Сохранить"</em></p>
         //-->
+        <p><a href="javascript: void(0);" class="sliderincat-add_next_image">Добавить еще одно изображение</a></p>
         <p class="sliderincat_error_log" style="color: red;"></p>
     </div>
 </div>
@@ -49,28 +57,31 @@
 <script type="text/javascript">
  $(function(){
 
+     $('.sliderincat-add_next_image').click(function () {
+         $('#sliderincat-image-list > tbody:last-child').append("<tr><td>Изображение <span class='hint'>({$sizes})</span></td><td colspan='2'><input type='file' name='sliderincat_image_file[]' value='Загрузить изображение'></td></tr>");
+     });
+
     //Скрытие всплывающего окна с эскизом
     $(document).off('click.hide_preview').on('click.hide_preview', '.sliderincat-preview-close', function(){
         $(this).parent().remove();
     });
 
-    $('#s-product-list-settings-form').click(function(){
-        $('#sliderincat-preview-block').remove();
-    });
+     $('#s-product-list-settings-form').click(function(){
+         $('#sliderincat-preview-block').remove();
+     });
 
-    $('#s-product-list-settings-form').find('div.dialog-buttons').find('a.cancel').click(function(){
-        $('#sliderincat-preview-block').remove();
-    });
+     $('#s-product-list-settings-form').find('div.dialog-buttons').find('a.cancel').click(function(){
+         $('#sliderincat-preview-block').remove();
+     });
 
-    $('#s-product-list-settings-form').find('div.dialog-buttons').find('input[type="submit"]').click(function(){
-        $('#sliderincat-preview-block').remove();
-    });
+     $('#s-product-list-settings-form').find('div.dialog-buttons').find('input[type="submit"]').click(function(){
+         $('#sliderincat-preview-block').remove();
+     });
 
     //Удаление изображения
     $('.sliderincat-del_image').off('click.del_image').on('click.del_image', function(){
         $('#sliderincat-preview-block').remove();
         var tr = $(this).parent().parent();
-        var type = tr.data('image_type');
         var cat_id = $('#sliderincat-image-list').data('cat_id');
         var id = tr.data('id');
         var ext = tr.data('ext');
@@ -79,14 +90,13 @@
         if($('#sliderincat-image-list').find('.loading').length == 0)
         {
             target.find('i').addClass('loading').removeClass('delete');
-            $.post('?plugin=sliderincat&module=deleteimage',{literal}{type: type, cat_id: cat_id, id: id, ext: ext}{/literal},function(response){
+            $.post('?plugin=sliderincat&module=deleteimage',{literal}{cat_id: cat_id, id: id, ext: ext}{/literal},function(response){
                 if(response.data.state)
                 {
                     target.parent().find('.loading').remove();
-                    tr.find('.preview_image').before('<input type="file" name="sliderincat_'+type+'_file" value="Загрузить изображение">');
-                    tr.find('.preview_image').remove();
+                    tr.find('.preview_image_sl').before('<input type="file" name="sliderincat_image_file[]" value="Загрузить изображение">');
+                    tr.find('.preview_image_sl').remove();
                     target.remove();
-
                 }
             },'json');
         }
@@ -94,10 +104,9 @@
     });
 
     //Предпросмотр изображения
-    $('.preview_image').off('click.preview_image').on('click.preview_image', function(e){
+    $('.preview_image_sl').off('click.preview_image_sl').on('click.preview_image_sl', function(e){
         var target = $(this);
         var tr = target.parent().parent();
-        var type = tr.data('image_type');
         var ext = tr.data('ext');
         var id = tr.data('id');
         var cat_id = $('#sliderincat-image-list').data('cat_id');
@@ -105,34 +114,21 @@
         if($('#sliderincat-image-list').find('.loading').length == 0)
         {
             target.after('<i class="icon16 loading"></i>');
-           $.post('?plugin=sliderincat&module=previewimage', {literal}{type: type, ext: ext, id: id, cat_id: cat_id}{/literal}, function(response){
+           $.post('?plugin=sliderincat&module=previewimage', {literal}{ext: ext, id: id, cat_id: cat_id}{/literal}, function(response){
                 if(response.data.path)
                 {
                     $('#sliderincat-preview-block').remove();
                     $('body').append('<div id="sliderincat-preview-block"><i class="icon16 no sliderincat-preview-close"></i><img src="'+response.data.path+'"></div>');
                     var block = $('#sliderincat-preview-block');
                     block.css('position','absolute');
-                    block.css('top', e.clientY+'px');
-                    block.css('left', e.clientX+'px');
-                    if(type == 'icon')
-                    {
-                        block.css('display', 'block');
-                        block.css({
-                            'width' : '100px',
-                            'height' : '100px',
-                            'line-height': '100px',
-                            'text-align': 'center'
-                        });
-                        block.find('img').css('vertical-align', 'middle');
-                    }else{
-                        block.css({
-                            'display': 'inline-block',
-                            'width': 'auto',
-                            'height': 'auto',
-                            'line-height': '100%'
-                        });
-                    }
-
+                    block.css('top', e.clientY + 'px');
+                    block.css('left', e.clientX + 'px');
+                    block.css({
+                        'display': 'inline-block',
+                        'width': 'auto',
+                        'height': 'auto',
+                        'line-height': '100%'
+                    });
                 }
                     tr.find('.loading').remove();
             },'json');

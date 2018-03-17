@@ -2,7 +2,7 @@
 return array(
     'name' => 'Слайдер на странице категории',
     'img' => 'img/sliderincat.png',
-    'description'=>'',
+    'description' => '',
     'vendor' => 1010465,
     'version' => '1.0',
     'shop_settings' => true,

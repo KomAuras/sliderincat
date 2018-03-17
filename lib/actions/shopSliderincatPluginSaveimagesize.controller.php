@@ -6,11 +6,10 @@ class shopSliderincatPluginSaveimagesizeController extends waJsonController
 {
     function execute()
     {
-        $type = waRequest::post('type', waRequest::TYPE_STRING);
         $size = waRequest::post('str', waRequest::TYPE_STRING);
 
         $app_settings = new waAppSettingsModel();
-        $app_settings->set(wa()->getApp('shop').'.sliderincat', $type, $size);
+        $app_settings->set(wa()->getApp('shop').'.sliderincat', 'image', $size);
 
         $data = explode('X', $size);
         $data['width'] = array_shift($data);

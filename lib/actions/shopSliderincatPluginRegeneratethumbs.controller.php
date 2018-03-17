@@ -43,14 +43,12 @@ class shopSliderincatPluginRegeneratethumbsController extends waLongActionContro
     {
         $model = new shopSliderincatModel();
         $plugin = wa()->getPlugin('sliderincat');
-        $query = $model->query('SELECT id, category_id, type_image, ext FROM shop_sliderincat_images')->fetchAll();
+        $query = $model->query('SELECT id, category_id, ext FROM shop_sliderincat_images')->fetchAll();
         $this->data['image_count'] = count($query);
         $this->data['offset'] = 0;
         $this->data['timestamp'] = time();
         $this->data['data'] = $query;
-        $this->data['banner'] = $this->convert_to_array($plugin->getSettings('banner'));
         $this->data['image'] = $this->convert_to_array($plugin->getSettings('image'));
-        $this->data['icon'] = $this->convert_to_array($plugin->getSettings('icon'));
     }
 
     protected function isDone()
@@ -64,22 +62,21 @@ class shopSliderincatPluginRegeneratethumbsController extends waLongActionContro
         $path = wa()->getDataPath('sliderincatPlugin/categories/', true, 'shop');
 	    $original_path = wa()->getDataPath('sliderincatPlugin/categories/', false, 'shop');
         $ext = $this->data['data'][$this->data['offset']]['ext'];
-        $type_image = $this->data['data'][$this->data['offset']]['type_image'];
         $id = $this->data['data'][$this->data['offset']]['id'];
-        $width = $this->data[$type_image]['width'];
-        $height = $this->data[$type_image]['height'];
+        $width = $this->data['image']['width'];
+        $height = $this->data['image']['height'];
         $size = array('width' => $width, 'height' => $height);
 
 
-        if (file_exists($original_path."{$this->data['data'][$this->data['offset']]['category_id']}/{$type_image}_{$id}.{$ext}")) {
-            $image = shopCreatethumbnails::generateThumb($original_path."{$this->data['data'][$this->data['offset']]['category_id']}/{$type_image}_{$id}.{$ext}",
+        if (file_exists($original_path."{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}")) {
+            $image = shopCreatethumbnails::generateThumb($original_path."{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}",
                 $size);
 
-            if (file_exists($path."{$this->data['data'][$this->data['offset']]['category_id']}/{$type_image}_{$id}.{$ext}")) {
-                waFiles::delete($path."{$this->data['data'][$this->data['offset']]['category_id']}/{$type_image}_{$id}.{$ext}");
+            if (file_exists($path."{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}")) {
+                waFiles::delete($path."{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}");
             }
 
-            $image->save($path."{$this->data['data'][$this->data['offset']]['category_id']}/{$type_image}_{$id}.{$ext}");
+            $image->save($path."{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}");
         }
 
         $this->data['offset'] += 1;

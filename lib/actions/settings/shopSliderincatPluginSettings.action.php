@@ -22,9 +22,7 @@ class shopSliderincatPluginSettingsAction extends waViewAction
     function execute()
     {
         $plugin = wa()->getPlugin('sliderincat');
-        $this->view->assign('banner', $this->convert_to_array($plugin->getSettings('banner')));
         $this->view->assign('image', $this->convert_to_array($plugin->getSettings('image')));
-        $this->view->assign('icon', $this->convert_to_array($plugin->getSettings('icon')));
     }
 
 }

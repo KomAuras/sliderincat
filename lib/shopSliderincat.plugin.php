@@ -1,4 +1,5 @@
 <?php
+
 class shopSliderincatPlugin extends shopPlugin
 {
     /**
@@ -8,39 +9,22 @@ class shopSliderincatPlugin extends shopPlugin
      * @param array $category - данные о категории из базы данных
      * @return string - содержимое файла CategoryFields.html
      */
-     public function backendCategoryDialog($category)
-     {
+    public function backendCategoryDialog($category)
+    {
         $view = wa()->getView();
 
         $plugin = wa()->getPlugin('sliderincat');
+        $size = $this->convert_to_string($plugin->getSettings('image'));
+
         $model = new shopSliderincatModel();
-
-        $banner = $this->convert_to_string($plugin->getSettings('banner'));
-        $image = $this->convert_to_string($plugin->getSettings('image'));
-        $icon = $this->convert_to_string($plugin->getSettings('icon'));
-        $tmp_sizes = array($banner, $image, $icon);
-        $sizes = compact('banner', 'image', 'icon', $tmp_sizes);
-
         $images = $model->getAllofCat($category['id']);
-        $images_flag = array('banner' => false, 'image'=>false, 'icon'=>false);
-        if (!empty($images)) {
-            $keys = array_keys($images);
-            $values = array_values($images);
-            foreach ($images as $key => $val) {
-                $images_flag[$val['type_image']] = true;
-                $keys[$key] = $val['type_image'];
-            }
 
-            $images = array_combine($keys, $values);
-            $view->assign('images', $images);
-        }
-
-        $view->assign('images_flag', $images_flag);
-        $view->assign('sizes', $sizes);
+        $view->assign('images', $images);
+        $view->assign('sizes', $size);
         $view->assign('cat_id', $category['id']);
-        $path = wa()->getAppPath('plugins/sliderincat/templates/','shop');
-        $content = $view->fetch($path.'CategoryFields.html');
-        return  $content;
+        $path = wa()->getAppPath('plugins/sliderincat/templates/', 'shop');
+        $content = $view->fetch($path . 'CategoryFields.html');
+        return $content;
     }
 
 
@@ -48,23 +32,15 @@ class shopSliderincatPlugin extends shopPlugin
      * Метод для хука "category_save".
      *
      * @param array $category - данные о категории из базы данных
-    */
+     */
     public function saveCategorySettings($category)
     {
-	    $image_type = array();
-
         /*@var waRequestFileIterator*/
-	    $image_type['banner'] = waRequest::file('sliderincat_banner_file');
+        $images = waRequest::file('sliderincat_image_file');
 
-        /*@var waRequestFileIterator*/
-	    $image_type['image'] = waRequest::file('sliderincat_image_file');
-
-        /*@var waRequestFileIterator*/
-	    $image_type['icon'] = waRequest::file('sliderincat_icon_file');
-
-	    foreach ($image_type as $key => $val) {
-            if (($val->uploaded())) {
-			    $this->SaveImageData($val, $category, $key);
+        foreach ($images as $image) {
+            if (($image->uploaded())) {
+                $this->SaveImageData($image, $category);
             }
         }
     }
@@ -87,18 +63,20 @@ class shopSliderincatPlugin extends shopPlugin
      * Метод выводит ссылку на изображение определённого типа для категории
      *
      * @param int $id - идентификатор категории
-     * @param string $type - banner || image|| icon
      *
-     * @return string | false
-    */
-    public static function getCategoryImage($id, $type)
+     * @return array | false
+     */
+    public static function getCategoryImage($id)
     {
         $model = new shopSliderincatModel();
         $path = wa()->getDataUrl("sliderincatPlugin/categories/{$id}/", true, 'shop');
-        $image = $model->getByField(array('category_id'=>$id, 'type_image'=>$type));
-
-        if ($image) {
-            return $path.$type.'_'.$image['id'].'.'.$image['ext'];
+        $images = $model->getByField('category_id', $id, true);
+        if (count($images)) {
+            $data = array();
+            foreach ($images as $image) {
+                $data[] = $path . 'image_' . $image['id'] . '.' . $image['ext'];
+            }
+            return $data;
         } else {
             return false;
         }
@@ -108,12 +86,10 @@ class shopSliderincatPlugin extends shopPlugin
      * Метод для вывода массива изображений для всех категрий
      * @return array(
      *     [(int) categoty_id]=>array(
-     *            ['banner'] => (string) link,
      *            ['image'] => (string) link,
-     *            ['icon'] => (string) link,
      *     ),.........
      *);
-    */
+     */
     public static function getCategoryImageObj()
     {
         $model = new shopSliderincatModel();
@@ -121,15 +97,15 @@ class shopSliderincatPlugin extends shopPlugin
 
         $result = array();
 
-        foreach ($query as $key=>$val) {
+        foreach ($query as $key => $val) {
             $path = wa()->getDataUrl("sliderincatPlugin/categories/{$val['category_id']}/", true, 'shop');
 
             if (!isset($result[$val['category_id']])) {
                 $result[$val['category_id']] = array();
-                $result[$val['category_id']][$val['type_image']] = $path.$val['type_image'].'_'.$key.'.'.$val['ext'];
+                $result[$val['category_id']][$val['type_image']] = $path . $val['type_image'] . '_' . $key . '.' . $val['ext'];
             } else {
                 if (empty($result[$val['category_id']][$val['type_image']])) {
-                    $result[$val['category_id']][$val['type_image']] = $path.$val['type_image'].'_'.$key.'.'.$val['ext'];
+                    $result[$val['category_id']][$val['type_image']] = $path . $val['type_image'] . '_' . $key . '.' . $val['ext'];
                 }
             }
         }
@@ -147,7 +123,7 @@ class shopSliderincatPlugin extends shopPlugin
         $result = '';
         if (!is_array($data)) {
             $result = $data;
-        }else if (is_array($data)) {
+        } else if (is_array($data)) {
             $result = implode(' X ', $data);
         }
 
@@ -159,9 +135,8 @@ class shopSliderincatPlugin extends shopPlugin
      *
      * @param waRequestFileIterator $file - файл выбранного изображения;
      * @param array $category - данные о категории из базы данных;
-     * @param string $type - тип изображения (banner || image || icon);
      */
-    protected function SaveImageData($file, $category, $type)
+    protected function SaveImageData($file, $category)
     {
         $model = new shopSliderincatModel();
         $plugin = wa()->getPlugin('sliderincat');
@@ -174,24 +149,22 @@ class shopSliderincatPlugin extends shopPlugin
             'ext' => $file->extension
         );
 
-
         try {
             $image = $file->waImage();
             $path = wa()->getDataPath("sliderincatPlugin/categories/{$category['id']}/", true, 'shop');
             $original_path = wa()->getDataPath("sliderincatPlugin/categories/{$category['id']}/", false, 'shop');
             $data['width'] = $image->width;
             $data['height'] = $image->height;
-            $data['type_image'] = $type;
 
             $res = $model->insert($data);
             if ($res) {
-                $resize = $plugin->getSettings($type);
-                $image->save($original_path.$type.'_'.$res.'.'.$data['ext']);
-                $image = shopCreatethumbnails::generateThumb($original_path.$type.'_'.$res.'.'.$data['ext'], $resize);
-                $image->save($path.$type.'_'.$res.'.'.$data['ext']);
+                $resize = $plugin->getSettings('image');
+                $image->save($original_path . 'image_' . $res . '.' . $data['ext']);
+                $image = shopCreatethumbnails::generateThumb($original_path . 'image_' . $res . '.' . $data['ext'], $resize);
+                $image->save($path . 'image_' . $res . '.' . $data['ext']);
             }
         } catch (waException $e) {
-            echo "%sliderincat_plugin%Файл {$data['file_name']} не является изображением, либо произошла другая ошибка -  ".$e->getMessage()."%sliderincat_plugin%";
+            echo "%sliderincat_plugin%Файл {$data['file_name']} не является изображением, либо произошла другая ошибка -  " . $e->getMessage() . "%sliderincat_plugin%";
         }
     }
 }

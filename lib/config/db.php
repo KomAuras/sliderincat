@@ -1,9 +1,8 @@
 <?php
 return array(
- 'shop_sliderincat_images' => array(
+    'shop_sliderincat_images' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
         'category_id' => array('int', 11, 'null' => 0),
-        'type_image' => array('varchar', 10, 'null' => 0),
         'upload_datetime' => array('datetime', 'null' => 0),
         'file_name' => array('varchar', 255, 'null' => 0),
         'ext' => array('varchar', 10, 'null' => 0),
