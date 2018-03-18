@@ -1,7 +1,8 @@
 <?php
+
 /**
-* Удаление и новое создание эскизов изображений для категорий
-*/
+ * Удаление и новое создание эскизов изображений для категорий
+ */
 class shopSliderincatPluginRegeneratethumbsController extends waLongActionController
 {
     public function execute()
@@ -17,8 +18,8 @@ class shopSliderincatPluginRegeneratethumbsController extends waLongActionContro
         }
     }
 
-   protected function convert_to_array($data)
-   {
+    protected function convert_to_array($data)
+    {
         if (is_array($data)) {
             return $data;
         } else {
@@ -27,10 +28,10 @@ class shopSliderincatPluginRegeneratethumbsController extends waLongActionContro
             $data['height'] = array_shift($data);
             return $data;
         }
-   }
+    }
 
 
-	protected function finish($filename)
+    protected function finish($filename)
     {
         $this->info();
         if ($this->getRequest()->post('cleanup')) {
@@ -60,7 +61,7 @@ class shopSliderincatPluginRegeneratethumbsController extends waLongActionContro
     {
         sleep(0.2);
         $path = wa()->getDataPath('sliderincatPlugin/categories/', true, 'shop');
-	    $original_path = wa()->getDataPath('sliderincatPlugin/categories/', false, 'shop');
+        $original_path = wa()->getDataPath('sliderincatPlugin/categories/', false, 'shop');
         $ext = $this->data['data'][$this->data['offset']]['ext'];
         $id = $this->data['data'][$this->data['offset']]['id'];
         $width = $this->data['image']['width'];
@@ -68,15 +69,15 @@ class shopSliderincatPluginRegeneratethumbsController extends waLongActionContro
         $size = array('width' => $width, 'height' => $height);
 
 
-        if (file_exists($original_path."{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}")) {
-            $image = shopCreatethumbnails::generateThumb($original_path."{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}",
+        if (file_exists($original_path . "{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}")) {
+            $image = shopCreatethumbnails::generateThumb($original_path . "{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}",
                 $size);
 
-            if (file_exists($path."{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}")) {
-                waFiles::delete($path."{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}");
+            if (file_exists($path . "{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}")) {
+                waFiles::delete($path . "{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}");
             }
 
-            $image->save($path."{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}");
+            $image->save($path . "{$this->data['data'][$this->data['offset']]['category_id']}/image_{$id}.{$ext}");
         }
 
         $this->data['offset'] += 1;
@@ -91,10 +92,10 @@ class shopSliderincatPluginRegeneratethumbsController extends waLongActionContro
         }
 
         $response = array(
-            'time'       => sprintf('%d:%02d:%02d', floor($interval / 3600), floor($interval / 60) % 60, $interval % 60),
-            'processId'  => $this->processId,
-            'progress'   => 0.0,
-            'ready'      => $this->isDone(),
+            'time' => sprintf('%d:%02d:%02d', floor($interval / 3600), floor($interval / 60) % 60, $interval % 60),
+            'processId' => $this->processId,
+            'progress' => 0.0,
+            'ready' => $this->isDone(),
             'offset' => $this->data['offset'],
         );
         $response['progress'] = ($this->data['offset'] / $this->data['image_count']) * 100;
@@ -109,15 +110,15 @@ class shopSliderincatPluginRegeneratethumbsController extends waLongActionContro
 
     protected function report()
     {
-        $report = '<div class="successmsg"><i class="icon16 yes"></i> Обработано '.$this->data['image_count'].' эскизов';
+        $report = '<div class="successmsg"><i class="icon16 yes"></i> Обработано ' . $this->data['image_count'] . ' эскизов';
 
         if (!empty($this->data['timestamp'])) {
             $interval = time() - $this->data['timestamp'];
             $interval = sprintf(_w('%02d hr %02d min %02d sec'), floor($interval / 3600), floor($interval / 60) % 60, $interval % 60);
-            $report .= ' '.sprintf(_w('(total time: %s)'), $interval);
+            $report .= ' ' . sprintf(_w('(total time: %s)'), $interval);
         }
 
-        $report .= '&nbsp;<a class="close" href="javascript:void(0);">'._w('close').'</a></div>';
+        $report .= '&nbsp;<a class="close" href="javascript:void(0);">' . _w('close') . '</a></div>';
         return $report;
     }
 
@@ -125,8 +126,7 @@ class shopSliderincatPluginRegeneratethumbsController extends waLongActionContro
     private function error($message)
     {
         $path = wa()->getConfig()->getPath('log');
-        waFiles::create($path.'/shop/sliderincat_thumb_regenerate.log');
+        waFiles::create($path . '/shop/sliderincat_thumb_regenerate.log');
         waLog::log($message, 'shop/sliderincat_thumb_regenerate.log');
     }
 }
-

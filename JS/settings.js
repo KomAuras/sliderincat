@@ -33,10 +33,9 @@ $(function () {
         if (reg_str.test(width) && reg_str.test(height) && (width != 0 || height != 0)) {
             var target = $(this);
             if (target.parent().find('.loading').length == 0) {
-                var type = target.parent().data('image_type');
                 var result_str = width + 'X' + height;
                 target.append('<i class="icon16 loading"></i>');
-                $.post('?plugin=sliderincat&module=saveimagesize', {type: type, str: result_str}, function (response) {
+                $.post('?plugin=sliderincat&module=saveimagesize', {str: result_str}, function (response) {
                     if (response.data.size) {
                         target.parent().parent().find('td.image_size').data('width', response.data.size.width).data('height', response.data.size.height);
                         target.find('.loading').remove();

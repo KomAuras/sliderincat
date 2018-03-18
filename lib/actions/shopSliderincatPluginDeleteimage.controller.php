@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Удаление изображения для категории
-*/
+ */
 class shopSliderincatPluginDeleteimageController extends waJsonController
 {
     function execute()
@@ -14,8 +15,8 @@ class shopSliderincatPluginDeleteimageController extends waJsonController
         $path = wa()->getDataPath("sliderincatPlugin/categories/{$cat_id}/", true, 'shop');
         $original_path = wa()->getDataPath("sliderincatPlugin/categories/{$cat_id}/", false, 'shop');
         $model->deleteById($id);
-        waFiles::delete($path.'image_'.$id.'.'.$ext);
-        waFiles::delete($original_path.'image_'.$id.'.'.$ext);
+        waFiles::delete($path . 'image_' . $id . '.' . $ext);
+        waFiles::delete($original_path . 'image_' . $id . '.' . $ext);
 
         $this->response['state'] = true;
     }

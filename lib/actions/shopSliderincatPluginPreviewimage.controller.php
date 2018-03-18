@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Формирование ссылки для предпросмотра изображения определённого типа для категории
-*/
+ */
 class shopSliderincatPluginPreviewimageController extends waJsonController
 {
     /**
@@ -9,7 +10,7 @@ class shopSliderincatPluginPreviewimageController extends waJsonController
      *
      * @param string $data - "width X height"
      * @return array - ('width' => int, 'height' => int);
-    */
+     */
     protected function convert_to_array($data)
     {
         if (is_array($data)) {
@@ -22,7 +23,6 @@ class shopSliderincatPluginPreviewimageController extends waJsonController
         }
     }
 
-
     function execute()
     {
         $id = waRequest::post('id', waRequest::TYPE_INT);
@@ -30,7 +30,7 @@ class shopSliderincatPluginPreviewimageController extends waJsonController
         $cat_id = waRequest::post('cat_id', waRequest::TYPE_INT);
 
         $path = wa()->getDataUrl("sliderincatPlugin/categories/{$cat_id}/", true, 'shop');
-        $path = $path.'image_'.$id.'.'.$ext;
+        $path = $path . 'image_' . $id . '.' . $ext;
         $this->response['path'] = $path;
     }
 }

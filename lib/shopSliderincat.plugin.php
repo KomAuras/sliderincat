@@ -83,36 +83,6 @@ class shopSliderincatPlugin extends shopPlugin
     }
 
     /**
-     * Метод для вывода массива изображений для всех категрий
-     * @return array(
-     *     [(int) categoty_id]=>array(
-     *            ['image'] => (string) link,
-     *     ),.........
-     *);
-     */
-    public static function getCategoryImageObj()
-    {
-        $model = new shopSliderincatModel();
-        $query = $model->query('SELECT id, type_image, category_id, ext FROM shop_sliderincat_images')->fetchAll('id');
-
-        $result = array();
-
-        foreach ($query as $key => $val) {
-            $path = wa()->getDataUrl("sliderincatPlugin/categories/{$val['category_id']}/", true, 'shop');
-
-            if (!isset($result[$val['category_id']])) {
-                $result[$val['category_id']] = array();
-                $result[$val['category_id']][$val['type_image']] = $path . $val['type_image'] . '_' . $key . '.' . $val['ext'];
-            } else {
-                if (empty($result[$val['category_id']][$val['type_image']])) {
-                    $result[$val['category_id']][$val['type_image']] = $path . $val['type_image'] . '_' . $key . '.' . $val['ext'];
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
      * Преобразование массива данных в строку
      *
      * @param mixed $data - массив со значениями ширины и высоты изображения

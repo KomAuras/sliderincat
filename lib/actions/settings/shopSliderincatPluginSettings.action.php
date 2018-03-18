@@ -1,11 +1,12 @@
 <?php
+
 class shopSliderincatPluginSettingsAction extends waViewAction
 {
-     /**
-      *Преобразование строки вида "width X height" в массив данных
-      *
-      *@param string - "width X height"
-      *@return array - ('width' => int, 'height' => int);
+    /**
+     *Преобразование строки вида "width X height" в массив данных
+     *
+     * @param string - "width X height"
+     * @return array - ('width' => int, 'height' => int);
      */
     protected function convert_to_array($data)
     {

@@ -1,10 +1,10 @@
 <?php
 return array(
-    'name' => 'Слайдер на странице категории',
+    'name' => 'Слайдер категории',
     'img' => 'img/sliderincat.png',
-    'description' => '',
+    'description' => 'Слайдер на странице категории',
     'vendor' => 1010465,
-    'version' => '1.0',
+    'version' => '1.1',
     'shop_settings' => true,
     'frontend' => true,
     'handlers' => array(

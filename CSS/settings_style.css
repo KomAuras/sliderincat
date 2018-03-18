@@ -1,4 +1,4 @@
-.image_save_button{
+.image_save_button {
     color: #fff;
     background: #333;
     cursor: pointer;
@@ -11,30 +11,10 @@
     letter-spacing: normal;
 }
 
-code{
-    color:#515151;
-    background:#eee;
-    border:1px solid #ccc;
-    padding:3px 5px;
-    display:inline-block;
-}
-
-span.green{
-    background:#8FE784;
-}
-
-span.yellow{
-    background:#83E2E5;
-}
-
-#open-info{
-    color:#777;
-    border-bottom:1px dashed #777;
-    display:inline-block;
-    cursor:pointer;
-}
-
-#open-info:hover{
-    color:#353535;
-    border-bottom:1px dashed #fff;
+code {
+    color: #515151;
+    background: #eee;
+    border: 1px solid #ccc;
+    padding: 3px 5px;
+    display: inline-block;
 }
